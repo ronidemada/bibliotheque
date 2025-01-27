@@ -44,7 +44,7 @@ public class BorrowingService {
         borrowing.setUser(user);
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException(userId));
+                .orElseThrow(() -> new BookNotFoundException(bookId));
 
         if(!available(book)){
             throw new BookUnavailableException();
