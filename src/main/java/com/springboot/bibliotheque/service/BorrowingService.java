@@ -34,9 +34,9 @@ public class BorrowingService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
-        if(!book.isAvailable()){
+        /*if(!book.isAvailable()){
             throw new RuntimeException("BookUnavailableException : Book already borrow");
-        }
+        }*/
 
         borrowing.setBook(book);
         borrowing.setBorrowDate(LocalDate.now());

@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -20,25 +21,25 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<String> createUser(@Valid @RequestBody User user, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(bindingResult.getFieldError().getDefaultMessage());
+                    .body(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
         userService.addUser(user);
         return ResponseEntity.ok("created user");
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers(){
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(Long id){
+    public ResponseEntity<User> getUser(@PathVariable Long id){
         try {
             return ResponseEntity.ok(userService.getUser(id));
         }catch (Exception exception){

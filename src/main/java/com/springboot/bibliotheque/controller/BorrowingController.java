@@ -19,8 +19,8 @@ public class BorrowingController {
         this.borrowingService = borrowingService;
     }
 
-    @GetMapping("/")
-    public void borrow(@RequestParam Long userId, @RequestParam Long bookId, @RequestBody Borrowing borrowing){
+    @GetMapping("")
+    public void borrow(@RequestParam Long userId, @RequestParam Long bookId){
         borrowingService.borrow(userId,bookId);
     }
 

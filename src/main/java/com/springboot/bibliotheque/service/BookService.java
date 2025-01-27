@@ -1,6 +1,7 @@
 package com.springboot.bibliotheque.service;
 
 import com.springboot.bibliotheque.entity.Book;
+import com.springboot.bibliotheque.entity.User;
 import com.springboot.bibliotheque.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +30,7 @@ public class BookService {
             Book bookUpdate = optionalBook.get();
             bookUpdate.setTitle(book.getTitle());
             bookUpdate.setAuthor(book.getAuthor());
-
+            bookUpdate.setAvailable(bookUpdate.isAvailable());
             bookRepository.save(bookUpdate);
         }
 
@@ -46,7 +47,11 @@ public class BookService {
 
     public Book getBook(Long id){
         Optional<Book> book = bookRepository.findById(id);
-        return  book.get();
+        return book.get();
+    }
+
+    public List<Book> getAllBook(){
+        return bookRepository.findAll();
     }
 
 }

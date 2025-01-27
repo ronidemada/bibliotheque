@@ -1,6 +1,7 @@
 package com.springboot.bibliotheque.controller;
 
 import com.springboot.bibliotheque.entity.Book;
+import com.springboot.bibliotheque.entity.User;
 import com.springboot.bibliotheque.exception.BookNotFoundException;
 import com.springboot.bibliotheque.service.BookService;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/book")
@@ -21,23 +23,23 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<String> createBook(@Valid @RequestBody Book book, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(bindingResult.getFieldError().getDefaultMessage());
+                    .body(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         bookService.addBook(book);
         return ResponseEntity.ok("created book");
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<String> updateBook(@PathVariable Long id, @Valid @RequestBody Book book, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(bindingResult.getFieldError().getDefaultMessage());
+                    .body(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         bookService.updateBook(id, book);
         return ResponseEntity.ok("updated book");
@@ -53,17 +55,22 @@ public class BookController {
         }
     }
 
-    @GetMapping("/bookList")
-    public ResponseEntity<List<Book>> getAllBook(@RequestParam boolean isAvailable){
-        return ResponseEntity.ok(bookService.findBooklist(isAvailable));
+    @GetMapping("/booklist")
+    public ResponseEntity<List<Book>> getAllBook(@RequestParam boolean available){
+        return ResponseEntity.ok(bookService.findBooklist(available));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBook(Long id){
+    public ResponseEntity<Book> getBook(@PathVariable Long id){
         try {
             return ResponseEntity.ok(bookService.getBook(id));
         }catch (Exception exception){
             throw new BookNotFoundException(id);
         }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<Book>> getAllBook(){
+        return ResponseEntity.ok(bookService.getAllBook());
     }
 }

@@ -24,6 +24,7 @@ public class User {
     @NotNull(message = "Name for User is required")
     private String name;
 
+    @NotNull(message = "Email for User is required")
     @Email(message = "Please enter a valid email")
     @Column(unique=true)
     private String email;
