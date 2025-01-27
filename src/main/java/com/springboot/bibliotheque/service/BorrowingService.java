@@ -3,6 +3,10 @@ package com.springboot.bibliotheque.service;
 import com.springboot.bibliotheque.entity.Book;
 import com.springboot.bibliotheque.entity.Borrowing;
 import com.springboot.bibliotheque.entity.User;
+import com.springboot.bibliotheque.exception.BookNotFoundException;
+import com.springboot.bibliotheque.exception.BookUnavailableException;
+import com.springboot.bibliotheque.exception.BorrowingLimitExceededException;
+import com.springboot.bibliotheque.exception.UserNotFoundException;
 import com.springboot.bibliotheque.repository.BookRepository;
 import com.springboot.bibliotheque.repository.BorrowingRepository;
 import com.springboot.bibliotheque.repository.UserRepository;
@@ -23,20 +27,32 @@ public class BorrowingService {
         this.bookRepository = bookRepository;
     }
 
+    private boolean available(Book book){
+        return book.isAvailable();
+    }
+
+    private int countBorrow(User user){
+        return borrowingRepository.countByUser(user);
+    }
+
     public void borrow(Long userId, Long bookId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         Borrowing borrowing = new Borrowing();
         borrowing.setUser(user);
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException(userId));
 
-        /*if(!book.isAvailable()){
-            throw new RuntimeException("BookUnavailableException : Book already borrow");
-        }*/
+        if(!available(book)){
+            throw new BookUnavailableException();
+        }
+
+        if(countBorrow(user)>=3){
+            throw new BorrowingLimitExceededException();
+        }
 
         borrowing.setBook(book);
         borrowing.setBorrowDate(LocalDate.now());

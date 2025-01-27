@@ -18,4 +18,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(exception.getMessage());
     }
 
+    @ExceptionHandler(BookUnavailableException.class)
+    public ResponseEntity<String> bookUnavailableHandler(BookUnavailableException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(BorrowingLimitExceededException.class)
+    public ResponseEntity<String> BorrowingLimitExceededHandler(BorrowingLimitExceededException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(exception.getMessage());
+    }
+
 }
